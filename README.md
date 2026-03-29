@@ -6,7 +6,10 @@ This app helps you log service history, estimate what is due next, and keep back
 
 ## File Layout
 
-- `tacoma-tracker.html`: Entire application (HTML, CSS, JavaScript).
+- `index.html` — HTML skeleton
+- `tacoma-tracker.css` — All styles
+- `js/` — JavaScript modules (data, logic, render, handlers, export, etc.)
+- `offline/tacoma-tracker.html` — Original single-file version (reference copy)
 
 ## What It Tracks
 
@@ -72,7 +75,7 @@ Because storage is browser-specific, use JSON export/import to move or back up d
 
 No install required.
 
-1. Open `tacoma-tracker.html` in a modern browser.
+1. Open `index.html` in a modern browser.
 2. Enter current odometer miles.
 3. Expand items and log service events.
 4. Use `Export JSON` for backups and `Import JSON` to restore data.
@@ -80,10 +83,9 @@ No install required.
 
 ## Dependencies
 
-External CDN scripts/fonts used by the page:
+External CDN scripts used by the page:
 
 - `jsPDF` (PDF export)
-- Google Fonts (`DM Sans`, `DM Mono`)
 
 If you run fully offline, PDF export and web fonts may not load unless these assets are available locally.
 
