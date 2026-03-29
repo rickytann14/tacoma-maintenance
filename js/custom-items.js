@@ -96,9 +96,11 @@ function renderCustomItem(item) {
   let remHtml = `<div class="row-rem"><div class="row-rem-lbl">—</div></div>`;
   if (!isOnetime && rem !== null) {
     const cls = status === 'ok' ? '' : status;
+    const estDate = getEstDueDate(rem);
     remHtml = `<div class="row-rem">
       <div class="row-rem-num ${cls}">${rem<=0?'−':''}${fmt(rem)}</div>
       <div class="row-rem-lbl">${rem<=0?'mi overdue':'mi remaining'}</div>
+      ${estDate ? `<div class="row-rem-est">${estDate}</div>` : ''}
     </div>`;
   } else if (isOnetime && rec.lastMiles) {
     remHtml = `<div class="row-rem"><div class="row-rem-lbl" style="text-align:right">@ ${rec.lastMiles.toLocaleString()} mi</div></div>`;
@@ -152,6 +154,7 @@ function renderCustomItem(item) {
         <button class="btn-delete-item" onclick="openCustomModal('${item.id}');event.stopPropagation()" title="Edit">✎ Edit</button>
         <button class="btn-delete-item" onclick="deleteCustomItem('${item.id}',event)" title="Delete">× Remove</button>
       </div>
+      <textarea class="notes-input" id="notes-input-${item.id}" placeholder="Optional notes (shop, parts, cost…)" onclick="event.stopPropagation()" rows="2"></textarea>
       ${history.length > 0 ? `
       <div class="history-section">
         <div class="history-label">History</div>
@@ -161,6 +164,7 @@ function renderCustomItem(item) {
               <div class="history-entry-left">
                 <div class="history-mi">${(e.miles ?? 0).toLocaleString()} mi</div>
                 <div class="history-date">${e.date || ''}</div>
+                ${e.notes ? `<div class="history-notes">${e.notes}</div>` : ''}
               </div>
               <button class="history-delete" onclick="deleteHistory('${item.id}',${i},event)">×</button>
             </div>`).join('')}

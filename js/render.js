@@ -22,6 +22,7 @@ function renderHero() {
       <div>
         <div class="due-card-num ${status}">${rem <= 0 ? '−' : ''}${fmt(rem)}</div>
         <div class="due-card-sublabel">${rem <= 0 ? 'miles overdue' : 'miles remaining'}</div>
+        ${getEstDueDate(rem) ? `<div class="due-card-est">${getEstDueDate(rem)}</div>` : ''}
       </div>
       <div class="bar"><div class="bar-fill ${status}" style="width:${getProg(item)}%"></div></div>
     </div>`).join('');
@@ -90,9 +91,11 @@ function renderItem(item) {
     remHtml = `<div class="row-rem"><div class="row-rem-lbl" style="color:var(--text-3)">N/A</div></div>`;
   } else if (rem !== null) {
     const cls = (status === 'ok') ? '' : status;
+    const estDate = getEstDueDate(rem);
     remHtml = `<div class="row-rem">
       <div class="row-rem-num ${cls}">${rem<=0?'−':''}${fmt(rem)}</div>
       <div class="row-rem-lbl">${rem<=0?'mi overdue':'mi remaining'}</div>
+      ${estDate ? `<div class="row-rem-est">${estDate}</div>` : ''}
     </div>`;
   }
 
@@ -155,6 +158,7 @@ function renderItem(item) {
             Mark Done
           </button>
         </div>
+        <textarea class="notes-input" id="notes-input-${item.id}" placeholder="Optional notes (shop, parts, cost…)" onclick="event.stopPropagation()" rows="2"></textarea>
         <div class="history-section">
           <div class="history-label">Service History</div>
           <div class="history-list">
@@ -163,6 +167,7 @@ function renderItem(item) {
                 <div class="history-entry-left">
                   <div class="history-mi">${(h.miles ?? 0).toLocaleString()} mi</div>
                   <div class="history-date">${h.date || ''}</div>
+                  ${h.notes ? `<div class="history-notes">${h.notes}</div>` : ''}
                 </div>
                 <button class="history-delete" onclick="deleteHistory('${item.id}',${i},event)" aria-label="Delete history entry">×</button>
               </div>

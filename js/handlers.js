@@ -7,10 +7,11 @@ function toggle(id) {
   if (!wasOpen) { exp.classList.add('open'); row.classList.add('open'); }
 }
 
-function pushHistory(id, milesVal, dateVal) {
+function pushHistory(id, milesVal, dateVal, notes) {
   if (!records[id]) records[id] = {};
   if (!records[id].history) records[id].history = [];
   const entry = { miles: parseInt(milesVal), date: dateVal || new Date().toISOString().split('T')[0] };
+  if (notes && notes.trim()) entry.notes = notes.trim();
   // avoid duplicate at same mileage
   if (!records[id].history.find(e => e.miles === entry.miles)) {
     records[id].history.unshift(entry); // newest first
@@ -21,7 +22,10 @@ function markDone(id) {
   if (miles === null) { alert('Set your current odometer first.'); return; }
   if (!records[id]) records[id] = {};
   const today = new Date().toISOString().split('T')[0];
-  pushHistory(id, miles, today);
+  const notesEl = document.getElementById('notes-input-' + id);
+  const notes = notesEl ? notesEl.value : '';
+  pushHistory(id, miles, today, notes);
+  if (notesEl) notesEl.value = '';
   records[id].lastMiles = miles;
   records[id].lastDate = today;
   save();

@@ -842,3 +842,127 @@ body {
   opacity: 0.35;
   pointer-events: none;
 }
+
+/* ── Notes Input ──────────────────────────────────────────────────────────── */
+.notes-input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-2);
+  font-size: 12px;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+.notes-input:focus {
+  outline: none;
+  border-color: var(--green);
+}
+.history-notes {
+  font-size: 11px;
+  color: var(--text-3);
+  font-style: italic;
+  margin-top: 2px;
+  white-space: pre-wrap;
+}
+
+/* ── Est Due Date ─────────────────────────────────────────────────────────── */
+.row-rem-est,
+.due-card-est {
+  font-size: 10px;
+  color: var(--text-3);
+  font-style: italic;
+  margin-top: 1px;
+}
+
+/* ── Bulk Service Modal ───────────────────────────────────────────────────── */
+.btn-bulk-service {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-2);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+}
+.btn-bulk-service:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.bulk-item-list {
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.bulk-item-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.bulk-item-check:hover {
+  background: var(--surface-3);
+}
+.bulk-item-check input[type=checkbox] {
+  accent-color: var(--green);
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.bulk-item-name {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text);
+}
+.bulk-status-pill {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+.bulk-status-pill.overdue {
+  background: rgba(248,113,113,0.15);
+  color: var(--red);
+}
+.bulk-status-pill.soon {
+  background: rgba(251,191,36,0.15);
+  color: var(--amber);
+}
+.modal-subtitle {
+  font-size: 12px;
+  color: var(--text-3);
+  margin: 0 0 12px 0;
+}
+.modal-footer {
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.btn-secondary {
+  padding: 8px 16px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-2);
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-secondary:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}

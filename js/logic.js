@@ -29,3 +29,34 @@ function getProg(item) {
 }
 
 function fmt(n) { return Math.abs(n).toLocaleString(); }
+
+function calcAvgMilesPerDay() {
+  if (miles === null) return null;
+  let allEntries = [];
+  Object.values(records).forEach(rec => {
+    if (rec.history) {
+      rec.history.forEach(h => {
+        if (h.miles && h.date) allEntries.push(h);
+      });
+    }
+  });
+  if (allEntries.length === 0) return null;
+  allEntries.sort((a, b) => a.miles - b.miles);
+  const oldest = allEntries[0];
+  const oldestDate = new Date(oldest.date);
+  const today = new Date();
+  const daysDiff = (today - oldestDate) / 86400000;
+  if (daysDiff < 7) return null;
+  const milesDiff = miles - oldest.miles;
+  if (milesDiff <= 0) return null;
+  return milesDiff / daysDiff;
+}
+
+function getEstDueDate(rem) {
+  if (rem === null || rem <= 0) return null;
+  const avg = calcAvgMilesPerDay();
+  if (!avg || avg <= 0) return null;
+  const daysUntil = rem / avg;
+  const estDate = new Date(Date.now() + daysUntil * 86400000);
+  return '~' + estDate.toLocaleString('en-US', { month: 'short', year: 'numeric' });
+}

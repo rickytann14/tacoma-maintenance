@@ -44,6 +44,7 @@
         </div>
       </div>
     </div>
+        <button class="btn-bulk-service" onclick="openBulkModal()" id="btnBulkService">Quick Service Log</button>
 
     <div>
       <div class="count-row" onclick="document.getElementById('sec-overdue').scrollIntoView({behavior:'smooth'})">
@@ -178,6 +179,28 @@
   </div>
 </div>
 
+  <!-- Bulk Service Modal -->
+  <div class="modal-overlay" id="bulkModal" onclick="if(event.target===this)closeBulkModal()">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Log Service</h2>
+        <button class="modal-close" onclick="closeBulkModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <p id="bulkModalSubtitle" class="modal-subtitle"></p>
+        <div id="bulkItemList" class="bulk-item-list"></div>
+        <div style="margin-top:12px">
+          <label class="exp-label">Notes (applied to all selected)</label>
+          <textarea id="bulkNotes" class="notes-input" placeholder="Optional: shop, work performed…" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeBulkModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveBulkDone()">Log Selected</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script src="js/data.js"></script>
@@ -188,6 +211,7 @@
 <script src="js/handlers.js"></script>
 <script src="js/export-pdf.js"></script>
 <script src="js/backup.js"></script>
+<script src="js/bulk-done.js"></script>
 <script src="js/init.js"></script>
 </body>
 </html>
