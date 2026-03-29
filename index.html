@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tacoma Maintenance</title>
+<link rel="stylesheet" href="tacoma-tracker.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-eyebrow">Maintenance Tracker</div>
+      <div class="logo-title">Toyota Tacoma</div>
+      <div class="logo-sub">3rd Gen · 2016–2023 · V6 3.5L</div>
+
+    <div class="truck-img-wrap">
+      <img class="truck-img" src="" alt="Truck photo" id="truckImg">
+      <div class="truck-img-label" id="truckImgLabel">2022 Tacoma · Army Green · TRD Pro</div>
+      <div class="truck-img-actions">
+        <button class="btn-image" onclick="document.getElementById('truckImageFile').click()">Change photo</button>
+        <button class="btn-image reset" onclick="resetTruckImage()">Reset</button>
+      </div>
+      <input type="file" id="truckImageFile" accept="image/*" style="display:none" onchange="changeTruckImage(event)">
+    </div>
+
+    <div class="odo-block">
+      <div class="odo-label">Odometer</div>
+      <div class="odo-value" id="odoDisplay">—<span>mi</span></div>
+      <div class="odo-row">
+        <input class="odo-input" type="number" id="odoInput" placeholder="Enter miles…" min="0">
+        <button class="btn-update" onclick="setMiles()">Update</button>
+      </div>
+      <div class="odo-divider"></div>
+      <div class="odo-label">Next service at</div>
+      <div class="next-service-row">
+        <div>
+          <div class="next-service-val" id="nextServiceDisplay"><span class="unset">—</span></div>
+          <div class="next-service-sub" id="nextServiceSub"></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="count-row" onclick="document.getElementById('sec-overdue').scrollIntoView({behavior:'smooth'})">
+        <div class="count-label"><span class="dot red"></span>Overdue</div>
+        <div class="count-num" id="cntOverdue">—</div>
+      </div>
+      <div class="count-row" onclick="document.getElementById('sec-soon').scrollIntoView({behavior:'smooth'})">
+        <div class="count-label"><span class="dot amber"></span>Due soon</div>
+        <div class="count-num" id="cntSoon">—</div>
+      </div>
+      <div class="count-row">
+        <div class="count-label"><span class="dot green"></span>OK</div>
+        <div class="count-num" id="cntOk">—</div>
+      </div>
+      <div class="count-row">
+        <div class="count-label"><span class="dot gray"></span>Not logged</div>
+        <div class="count-num" id="cntUnknown">—</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="nav-label" style="margin-bottom:6px">Jump to</div>
+      <div class="nav-item" onclick="document.getElementById('sec-fluids').scrollIntoView({behavior:'smooth'})">Fluids</div>
+      <div class="nav-item" onclick="document.getElementById('sec-filters').scrollIntoView({behavior:'smooth'})">Filters & Spark Plugs</div>
+      <div class="nav-item" onclick="document.getElementById('sec-brakes').scrollIntoView({behavior:'smooth'})">Brakes & Rotation</div>
+      <div class="nav-item" onclick="document.getElementById('sec-custom').scrollIntoView({behavior:'smooth'})">Custom Items</div>
+    </div>
+
+    <div>
+      <div class="mode-label">Interval mode</div>
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="btnNormal" onclick="setMode('normal')">Normal</button>
+        <button class="mode-btn severe-active" id="btnSevere" onclick="setMode('severe')">Severe</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="mode-label" style="margin-bottom:6px">Data</div>
+      <div class="data-btns">
+        <button class="btn-data export" onclick="exportData()">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M2 12h12"/></svg>
+          Save
+        </button>
+        <button class="btn-data import" onclick="document.getElementById('importFile').click()">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 10V2M4.5 5.5L8 2l3.5 3.5M2 12h12"/></svg>
+          Load
+        </button>
+      </div>
+      <button class="btn-data" style="width:100%;margin-top:6px" onclick="exportPDF()">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="1" width="9" height="12" rx="1"/><path d="M11 1l3 3v9a1 1 0 01-1 1H5"/><path d="M11 1v3h3"/><path d="M5 8h4M5 10.5h3"/></svg>
+        Export PDF
+      </button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <section class="hero">
+      <div class="section-eyebrow">Due next</div>
+      <div class="due-grid" id="dueGrid"></div>
+    </section>
+
+    <div class="all-items">
+      <div id="sec-overdue"></div>
+      <div id="sec-soon"></div>
+
+      <div id="sec-fluids">
+        <div class="group-header"><div class="group-title">Fluids</div><div class="group-line"></div></div>
+        <div class="item-list" id="list-fluids"></div>
+      </div>
+      <div id="sec-filters">
+        <div class="group-header"><div class="group-title">Filters & Spark Plugs</div><div class="group-line"></div></div>
+        <div class="item-list" id="list-filters"></div>
+      </div>
+      <div id="sec-brakes">
+        <div class="group-header"><div class="group-title">Brakes, Belt & Rotation</div><div class="group-line"></div></div>
+        <div class="item-list" id="list-brakes"></div>
+      </div>
+
+      <div id="sec-custom">
+        <div class="group-header"><div class="group-title">Custom Items</div><div class="group-line"></div></div>
+        <div class="item-list" id="list-custom"></div>
+        <button class="btn-add-custom" onclick="openCustomModal()">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v12M2 8h12"/></svg>
+          Add custom item
+        </button>
+      </div>
+    </div>
+  </main>
+
+<!-- ADD / EDIT CUSTOM ITEM MODAL -->
+<div class="modal-overlay" id="customModal">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Add Custom Item</div>
+    <div class="modal-fields">
+      <div class="modal-field">
+        <label>Item name *</label>
+        <input class="modal-input full" id="ci_name" placeholder="e.g. Air Bag ECU Replacement">
+      </div>
+      <div class="modal-field">
+        <label>Part / Notes</label>
+        <input class="modal-input full" id="ci_pn" placeholder="e.g. PN# 89170-04180, cost $320">
+      </div>
+      <label class="checkbox-row" onclick="toggleOnetimeCheck()">
+        <input type="checkbox" id="ci_onetime">
+        <div class="custom-checkbox">
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#0a1a0d" stroke-width="2.5"><path d="M1.5 6l3 3 6-6"/></svg>
+        </div>
+        <span class="checkbox-label">One-time item (repair, replacement, upgrade)</span>
+      </label>
+      <div class="modal-row">
+        <div class="modal-field interval-field" id="intervalField">
+          <label>Repeat interval (miles)</label>
+          <input class="modal-input" id="ci_interval" type="number" min="0" placeholder="e.g. 5000">
+        </div>
+        <div class="modal-field">
+          <label>Done at (miles)</label>
+          <input class="modal-input" id="ci_miles" type="number" min="0" placeholder="e.g. 3891">
+        </div>
+      </div>
+      <div class="modal-field">
+        <label>Date done</label>
+        <input class="modal-input full" id="ci_date" type="date">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-cancel" onclick="closeCustomModal()">Cancel</button>
+      <button class="btn-modal-save" onclick="saveCustomItem()">Save</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/logic.js"></script>
+<script src="js/render.js"></script>
+<script src="js/custom-items.js"></script>
+<script src="js/handlers.js"></script>
+<script src="js/export-pdf.js"></script>
+<script src="js/backup.js"></script>
+<script src="js/init.js"></script>
+</body>
+</html>
