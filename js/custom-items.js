@@ -106,7 +106,7 @@ function renderCustomItem(item) {
     remHtml = `<div class="row-rem"><div class="row-rem-lbl" style="text-align:right">@ ${rec.lastMiles.toLocaleString()} mi</div></div>`;
   }
 
-  const intStr = isOnetime ? 'One-time' : `Every ${(item.interval/1000).toFixed(item.interval < 1000 ? 0 : 0)}K`;
+  const intStr = isOnetime ? 'One-time' : `Every ${(item.interval/1000).toFixed(item.interval < 10000 ? 1 : 0)}K`;
 
   return `
     <div class="item-row" id="row-${item.id}" onclick="toggle('${item.id}')">

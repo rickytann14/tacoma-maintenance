@@ -138,17 +138,21 @@ function exportPDF() {
   y = 52;
 
   // ── SUMMARY CARDS ────────────────────────────────────────────
-  const allItems = [...ITEMS, ...customItems.filter(i => i.interval)];
+  const allItems = [...ITEMS, ...customItems];
   const counts = { overdue: 0, soon: 0, ok: 0, unknown: 0 };
   allItems.forEach(item => {
     const s = item.id.startsWith('custom_')
       ? (() => {
           const rec = records[item.id] || {};
-          if (miles === null) return 'unknown';
-          const rem = (rec.lastMiles || 0) + item.interval - miles;
-          if (rem <= 0) return 'overdue';
-          if (rem <= 1500) return 'soon';
-          return 'ok';
+          if (item.interval) {
+            if (miles === null) return 'unknown';
+            const rem = (rec.lastMiles || 0) + item.interval - miles;
+            if (rem <= 0) return 'overdue';
+            if (rem <= 1500) return 'soon';
+            return 'ok';
+          } else {
+            return rec.lastMiles ? 'ok' : 'unknown';
+          }
         })()
       : getStatusForPDF(item);
     if (s !== 'na') counts[s]++;

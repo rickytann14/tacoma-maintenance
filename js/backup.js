@@ -6,7 +6,9 @@ function exportData() {
     severeMode,
     records,
     customItems,
-    nonServiceable
+    nonServiceable,
+    truckImgData: localStorage.getItem('tm3_truck_img_data'),
+    truckImgLabel: localStorage.getItem('tm3_truck_img_label')
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -35,7 +37,10 @@ function importData(event) {
       records = data.records ?? {};
       customItems = data.customItems ?? [];
       nonServiceable = data.nonServiceable ?? {};
+      if (data.truckImgData) localStorage.setItem('tm3_truck_img_data', data.truckImgData);
+      if (data.truckImgLabel) localStorage.setItem('tm3_truck_img_label', data.truckImgLabel);
       save();
+      applySavedTruckImage();
       renderAll();
     } catch(err) {
       alert('Could not read file. Make sure it is a valid JSON backup.');

@@ -20,7 +20,7 @@ function openBulkModal() {
 
   const allItems = [
     ...ITEMS.filter(item => !nonServiceable[item.id]),
-    ...customItems.filter(item => item.interval)
+    ...customItems
   ];
 
   document.getElementById('bulkItemList').innerHTML = allItems.map(item => {
