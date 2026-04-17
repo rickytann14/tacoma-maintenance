@@ -81,6 +81,36 @@ No install required.
 4. Use `Export JSON` for backups and `Import JSON` to restore data.
 5. Use `Export PDF` for printable/shareable reports.
 
+### Local Network Testing (Phone/Tablet/Desktop)
+
+Use the helper script to run a separate local server (does not touch Apache config/services):
+
+1. Start server:
+
+```bash
+./local-serve.sh start
+```
+
+2. View status and URLs:
+
+```bash
+./local-serve.sh status
+```
+
+3. Open the printed `LAN URL` on your phone/tablet (same Wi-Fi/network).
+
+4. Stop server when done:
+
+```bash
+./local-serve.sh stop
+```
+
+Notes:
+
+- Default port is `8090`.
+- If port is busy, script exits safely so existing services are not disturbed.
+- Use a custom port if needed: `PORT=9000 ./local-serve.sh start`.
+
 ## Dependencies
 
 External CDN scripts used by the page:

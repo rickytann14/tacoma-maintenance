@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Tacoma Maintenance</title>
 <link rel="stylesheet" href="tacoma-tracker.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -12,7 +12,8 @@
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="sidebar-logo">
+    <div class="sidebar-priority">
+    <div class="sidebar-logo sidebar-section sidebar-top">
       <div class="logo-eyebrow">Maintenance Tracker</div>
       <div class="logo-title">Toyota Tacoma</div>
       <div class="logo-sub">3rd Gen · 2016–2023 · V6 3.5L</div>
@@ -28,7 +29,7 @@
     </div>
     </div><!-- /sidebar-logo -->
 
-    <div class="odo-block">
+    <div class="odo-block sidebar-section sidebar-odometer">
       <div class="odo-label">Odometer</div>
       <div class="odo-value" id="odoDisplay">—<span>mi</span></div>
       <div class="odo-row">
@@ -44,9 +45,16 @@
         </div>
       </div>
     </div>
-        <button class="btn-bulk-service" onclick="openBulkModal()" id="btnBulkService">Quick Service Log</button>
+    <div class="sidebar-section sidebar-actions">
+      <button class="btn-bulk-service" onclick="openBulkModal()" id="btnBulkService">Quick Service Log</button>
+    </div>
+    </div>
 
-    <div>
+    <details class="sidebar-more" id="sidebarMore" open>
+      <summary class="sidebar-more-summary">More Sections</summary>
+      <div class="sidebar-secondary">
+
+    <div class="sidebar-section sidebar-health">
       <div class="count-row" onclick="document.getElementById('sec-overdue').scrollIntoView({behavior:'smooth'})">
         <div class="count-label"><span class="dot red"></span>Overdue</div>
         <div class="count-num" id="cntOverdue">—</div>
@@ -65,7 +73,7 @@
       </div>
     </div>
 
-    <div>
+    <div class="sidebar-section sidebar-jump">
       <div class="nav-label" style="margin-bottom:6px">Jump to</div>
       <div class="nav-item" onclick="document.getElementById('sec-fluids').scrollIntoView({behavior:'smooth'})">Fluids</div>
       <div class="nav-item" onclick="document.getElementById('sec-filters').scrollIntoView({behavior:'smooth'})">Filters & Spark Plugs</div>
@@ -73,7 +81,7 @@
       <div class="nav-item" onclick="document.getElementById('sec-custom').scrollIntoView({behavior:'smooth'})">Custom Items</div>
     </div>
 
-    <div>
+    <div class="sidebar-section sidebar-mode">
       <div class="mode-label">Interval mode</div>
       <div class="mode-toggle">
         <button class="mode-btn active" id="btnNormal" onclick="setMode('normal')">Normal</button>
@@ -81,7 +89,7 @@
       </div>
     </div>
 
-    <div>
+    <div class="sidebar-section sidebar-data">
       <div class="mode-label" style="margin-bottom:6px">Data</div>
       <div class="data-btns">
         <button class="btn-data export" onclick="exportData()">
@@ -99,6 +107,8 @@
       </button>
       <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
     </div>
+      </div>
+    </details>
   </aside>
 
   <!-- MAIN -->
