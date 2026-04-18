@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Tacoma Maintenance</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d0f0e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tacoma">
 <link rel="stylesheet" href="tacoma-tracker.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -223,5 +228,13 @@
 <script src="js/backup.js"></script>
 <script src="js/bulk-done.js"></script>
 <script src="js/init.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .catch(err => console.warn('SW registration failed:', err));
+    });
+  }
+</script>
 </body>
 </html>

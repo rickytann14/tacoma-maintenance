@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- App background -->
+  <rect width="512" height="512" fill="#0d0f0e"/>
+  <!-- Wrench icon (centered, ~60% of canvas) -->
+  <g transform="translate(256,256) scale(13.5)" fill="none" stroke="#4ade80" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Tabler Icons: tool/wrench -->
+    <path d="M7 10a4 4 0 1 0 8 0 4 4 0 0 0 -8 0"/>
+    <path d="M6 6l10 10"/>
+    <path d="M21 21l-2 -2"/>
+    <path d="M3 3l2 2"/>
+    <path d="M21 3a9 9 0 0 0 -9 9"/>
+    <path d="M3 21a9 9 0 0 0 9 -9"/>
+  </g>
+</svg>

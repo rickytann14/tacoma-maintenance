@@ -1,4 +1,8 @@
 function exportPDF() {
+  if (!window.jspdf) {
+    alert('PDF export is unavailable offline.\n\nConnect to Wi-Fi and reload the app once to enable it.');
+    return;
+  }
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
 
