@@ -60,10 +60,6 @@ function updateRec(id, field, value) {
   if (!records[id]) records[id] = {};
   if (field === 'lastMiles') {
     const parsed = value ? parseInt(value) : null;
-    if (parsed) {
-      const date = records[id].lastDate || new Date().toISOString().split('T')[0];
-      pushHistory(id, parsed, date);
-    }
     records[id].lastMiles = parsed;
   } else {
     records[id][field] = value;
