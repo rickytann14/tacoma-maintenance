@@ -1,6 +1,6 @@
 function getItemStatus(item) {
-  if (item.interval !== undefined) {
-    // custom item
+  if (item.interval) {
+    // repeating custom item
     if (miles === null) return 'unknown';
     const rec = records[item.id] || {};
     const lastDone = rec.lastMiles || 0;
@@ -9,6 +9,7 @@ function getItemStatus(item) {
     if (rem <= 1500) return 'soon';
     return 'ok';
   }
+  if ('interval' in item) return 'ok'; // one-time custom item — never overdue
   return getStatus(item);
 }
 
@@ -25,7 +26,7 @@ function openBulkModal() {
 
   const allItems = [
     ...ITEMS.filter(item => !nonServiceable[item.id]),
-    ...customItems
+    ...customItems.filter(item => item.interval)
   ];
 
   document.getElementById('bulkItemList').innerHTML = allItems.map(item => {
