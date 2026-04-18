@@ -35,12 +35,14 @@ function openBulkModal() {
   }).join('');
 
   document.getElementById('bulkNotes').value = '';
+  document.getElementById('bulkDate').value = new Date().toISOString().split('T')[0];
   document.getElementById('bulkModal').classList.add('open');
 }
 
 function closeBulkModal() {
   document.getElementById('bulkModal').classList.remove('open');
   document.getElementById('bulkNotes').value = '';
+  document.getElementById('bulkDate').value = '';
 }
 
 function saveBulkDone() {
@@ -51,7 +53,7 @@ function saveBulkDone() {
   if (checked.length === 0) { alert('Select at least one item.'); return; }
 
   const notes = document.getElementById('bulkNotes').value.trim();
-  const today = new Date().toISOString().split('T')[0];
+  const today = document.getElementById('bulkDate').value || new Date().toISOString().split('T')[0];
 
   checked.forEach(id => {
     if (!records[id]) records[id] = {};

@@ -202,7 +202,13 @@
         <button class="modal-close" onclick="closeBulkModal()">×</button>
       </div>
       <div class="modal-body">
-        <p id="bulkModalSubtitle" class="modal-subtitle"></p>
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:8px">
+          <p id="bulkModalSubtitle" class="modal-subtitle" style="margin:0;flex:1"></p>
+          <div style="flex:0 0 auto">
+            <label class="exp-label" style="margin-bottom:2px">Date</label>
+            <input type="date" id="bulkDate" style="padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:14px">
+          </div>
+        </div>
         <div id="bulkItemList" class="bulk-item-list"></div>
         <div style="margin-top:12px">
           <label class="exp-label">Notes (applied to all selected)</label>
