@@ -45,7 +45,7 @@ function saveHistoryEdit(id, index, e) {
 
   records[id].history[index] = entry;
 
-  const lastChange = records[id].history.find(e => !e.type || e.type === 'changed');
+  const lastChange = lastResetEntry(id);
   records[id].lastMiles = lastChange?.miles ?? null;
   records[id].lastDate  = lastChange?.date  ?? null;
 
@@ -83,6 +83,24 @@ function selectSvcType(id, btn) {
   btn.classList.add('active');
 }
 
+function svcResetsInterval(itemId, svcType) {
+  if (svcType === 'changed') return true;
+  if (svcType === 'inspected') {
+    const item = ITEMS.find(i => i.id === itemId) || customItems.find(i => i.id === itemId);
+    return !!item?.inspectResets;
+  }
+  return false;
+}
+
+function lastResetEntry(id) {
+  const item = ITEMS.find(i => i.id === id) || customItems.find(i => i.id === id);
+  return (records[id]?.history || []).find(e => {
+    if (!e.type || e.type === 'changed') return true;
+    if (e.type === 'inspected') return !!item?.inspectResets;
+    return false;
+  });
+}
+
 function markDone(id) {
   if (miles === null) { alert('Set your current odometer first.'); return; }
   if (!records[id]) records[id] = {};
@@ -96,7 +114,7 @@ function markDone(id) {
   pushHistory(id, miles, today, notes, svcType, brakeLining);
   if (notesEl) notesEl.value = '';
   if (brakeLiningEl) brakeLiningEl.value = '';
-  if (svcType === 'changed') {
+  if (svcResetsInterval(id, svcType)) {
     records[id].lastMiles = miles;
     records[id].lastDate = today;
   }
@@ -110,7 +128,7 @@ function deleteHistory(id, index, e) {
   if (!records[id]?.history) return;
   records[id].history.splice(index, 1);
   // recalculate lastMiles from most recent 'changed' entry (inspections don't reset interval)
-  const lastChange = records[id].history.find(e => !e.type || e.type === 'changed');
+  const lastChange = lastResetEntry(id);
   if (lastChange) {
     records[id].lastMiles = lastChange.miles;
     records[id].lastDate  = lastChange.date;

@@ -68,7 +68,7 @@ function saveBulkDone() {
   checked.forEach(id => {
     if (!records[id]) records[id] = {};
     pushHistory(id, miles, today, notes, svcType);
-    if (svcType === 'changed') {
+    if (svcResetsInterval(id, svcType)) {
       records[id].lastMiles = miles;
       records[id].lastDate = today;
     }
