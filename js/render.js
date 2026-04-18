@@ -176,6 +176,45 @@ function renderItem(item) {
           <div class="history-list">
             ${history.length ? history.map((h, i) => {
               const typeLabel = h.type === 'inspected' ? 'Inspected' : h.type === 'topped_off' ? 'Topped Off' : null;
+              const isEditing = historyEditState.id === item.id && historyEditState.index === i;
+              if (isEditing) {
+                const curType = h.type || 'changed';
+                return `
+                <div class="history-entry editing" onclick="event.stopPropagation()">
+                  <div class="history-edit-form">
+                    <div class="history-edit-row">
+                      <div>
+                        <label class="exp-label">Miles</label>
+                        <input class="exp-input" type="number" id="history-edit-miles" value="${h.miles ?? ''}" onclick="event.stopPropagation()">
+                      </div>
+                      <div>
+                        <label class="exp-label">Date</label>
+                        <input class="exp-input" type="date" id="history-edit-date" value="${h.date || ''}" onclick="event.stopPropagation()">
+                      </div>
+                    </div>
+                    <div>
+                      <label class="exp-label">Service Type</label>
+                      <div class="svc-type-btns" id="history-edit-type-${item.id}-${i}">
+                        <button class="svc-type-btn ${curType==='changed'?'active':''}" data-type="changed" onclick="selectHistoryEditType('${item.id}',${i},this);event.stopPropagation()">Changed</button>
+                        <button class="svc-type-btn ${curType==='inspected'?'active':''}" data-type="inspected" onclick="selectHistoryEditType('${item.id}',${i},this);event.stopPropagation()">Inspected</button>
+                        ${item.group === 'fluids' ? `<button class="svc-type-btn ${curType==='topped_off'?'active':''}" data-type="topped_off" onclick="selectHistoryEditType('${item.id}',${i},this);event.stopPropagation()">Topped Off</button>` : ''}
+                      </div>
+                    </div>
+                    ${item.group === 'brakes' ? `<div>
+                      <label class="exp-label">Brake Lining (mm)</label>
+                      <input class="exp-input" type="number" step="0.5" min="0" max="15" id="history-edit-lining" value="${h.brakeLining ?? ''}" placeholder="e.g. 4.5" style="width:120px" onclick="event.stopPropagation()">
+                    </div>` : ''}
+                    <div>
+                      <label class="exp-label">Notes</label>
+                      <textarea class="notes-input" id="history-edit-notes" rows="2" onclick="event.stopPropagation()">${h.notes || ''}</textarea>
+                    </div>
+                    <div class="history-edit-actions">
+                      <button class="btn-secondary" onclick="cancelHistoryEdit('${item.id}',event)">Cancel</button>
+                      <button class="btn-primary" onclick="saveHistoryEdit('${item.id}',${i},event)">Save</button>
+                    </div>
+                  </div>
+                </div>`;
+              }
               return `
               <div class="history-entry">
                 <div class="history-entry-left">
@@ -187,7 +226,10 @@ function renderItem(item) {
                   ${h.brakeLining != null ? `<div class="history-notes">Lining: ${h.brakeLining} mm</div>` : ''}
                   ${h.notes ? `<div class="history-notes">${h.notes}</div>` : ''}
                 </div>
-                <button class="history-delete" onclick="deleteHistory('${item.id}',${i},event)" aria-label="Delete history entry">×</button>
+                <div class="history-entry-actions">
+                  <button class="history-edit-btn" onclick="openHistoryEdit('${item.id}',${i},event)" aria-label="Edit history entry">✏</button>
+                  <button class="history-delete" onclick="deleteHistory('${item.id}',${i},event)" aria-label="Delete history entry">×</button>
+                </div>
               </div>`;
             }).join('') : '<div class="history-empty">No service entries yet.</div>'}
           </div>

@@ -1,3 +1,60 @@
+let historyEditState = { id: null, index: null };
+
+function reopenPanel(id) {
+  setTimeout(() => {
+    document.getElementById('exp-' + id)?.classList.add('open');
+    document.getElementById('row-' + id)?.classList.add('open');
+  }, 10);
+}
+
+function openHistoryEdit(id, index, e) {
+  e.stopPropagation();
+  historyEditState = { id, index };
+  renderAll();
+  reopenPanel(id);
+}
+
+function cancelHistoryEdit(id, e) {
+  e.stopPropagation();
+  historyEditState = { id: null, index: null };
+  renderAll();
+  reopenPanel(id);
+}
+
+function selectHistoryEditType(id, index, btn) {
+  const group = document.getElementById(`history-edit-type-${id}-${index}`);
+  group.querySelectorAll('.svc-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function saveHistoryEdit(id, index, e) {
+  e.stopPropagation();
+  if (!records[id]?.history?.[index]) return;
+  const milesVal = parseInt(document.getElementById('history-edit-miles').value);
+  const dateVal  = document.getElementById('history-edit-date').value;
+  const notesVal = document.getElementById('history-edit-notes').value.trim();
+  const activeTypeBtn = document.querySelector(`#history-edit-type-${id}-${index} .svc-type-btn.active`);
+  const svcType  = activeTypeBtn ? activeTypeBtn.dataset.type : 'changed';
+  const liningEl = document.getElementById('history-edit-lining');
+  const liningVal = liningEl ? liningEl.value : '';
+
+  const entry = { miles: isNaN(milesVal) ? records[id].history[index].miles : milesVal, date: dateVal };
+  if (notesVal) entry.notes = notesVal;
+  if (svcType !== 'changed') entry.type = svcType;
+  if (liningVal) entry.brakeLining = parseFloat(liningVal);
+
+  records[id].history[index] = entry;
+
+  const lastChange = records[id].history.find(e => !e.type || e.type === 'changed');
+  records[id].lastMiles = lastChange?.miles ?? null;
+  records[id].lastDate  = lastChange?.date  ?? null;
+
+  historyEditState = { id: null, index: null };
+  save();
+  renderAll();
+  reopenPanel(id);
+}
+
 function toggle(id) {
   const row = document.getElementById('row-' + id);
   const exp = document.getElementById('exp-' + id);
@@ -45,10 +102,7 @@ function markDone(id) {
   }
   save();
   renderAll();
-  setTimeout(() => {
-    document.getElementById('exp-' + id)?.classList.add('open');
-    document.getElementById('row-' + id)?.classList.add('open');
-  }, 10);
+  reopenPanel(id);
 }
 
 function deleteHistory(id, index, e) {
@@ -66,10 +120,7 @@ function deleteHistory(id, index, e) {
   }
   save();
   renderAll();
-  setTimeout(() => {
-    document.getElementById('exp-' + id)?.classList.add('open');
-    document.getElementById('row-' + id)?.classList.add('open');
-  }, 10);
+  reopenPanel(id);
 }
 
 function updateRec(id, field, value) {
@@ -82,10 +133,7 @@ function updateRec(id, field, value) {
   }
   save();
   renderAll();
-  setTimeout(() => {
-    document.getElementById('exp-' + id)?.classList.add('open');
-    document.getElementById('row-' + id)?.classList.add('open');
-  }, 10);
+  reopenPanel(id);
 }
 
 function updateDateRec(id, value) {
@@ -98,10 +146,7 @@ function toggleNA(id, el) {
   nonServiceable[id] = el.checked;
   save();
   renderAll();
-  setTimeout(() => {
-    document.getElementById('exp-' + id)?.classList.add('open');
-    document.getElementById('row-' + id)?.classList.add('open');
-  }, 10);
+  reopenPanel(id);
 }
 
 function setMiles() {

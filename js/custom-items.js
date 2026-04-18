@@ -159,15 +159,46 @@ function renderCustomItem(item) {
       <div class="history-section">
         <div class="history-label">History</div>
         <div class="history-list">
-          ${history.map((e, i) => `
+          ${history.map((e, i) => {
+            const isEditing = historyEditState.id === item.id && historyEditState.index === i;
+            if (isEditing) {
+              return `
+              <div class="history-entry editing" onclick="event.stopPropagation()">
+                <div class="history-edit-form">
+                  <div class="history-edit-row">
+                    <div>
+                      <label class="exp-label">Miles</label>
+                      <input class="exp-input" type="number" id="history-edit-miles" value="${e.miles ?? ''}" onclick="event.stopPropagation()">
+                    </div>
+                    <div>
+                      <label class="exp-label">Date</label>
+                      <input class="exp-input" type="date" id="history-edit-date" value="${e.date || ''}" onclick="event.stopPropagation()">
+                    </div>
+                  </div>
+                  <div>
+                    <label class="exp-label">Notes</label>
+                    <textarea class="notes-input" id="history-edit-notes" rows="2" onclick="event.stopPropagation()">${e.notes || ''}</textarea>
+                  </div>
+                  <div class="history-edit-actions">
+                    <button class="btn-secondary" onclick="cancelHistoryEdit('${item.id}',event)">Cancel</button>
+                    <button class="btn-primary" onclick="saveHistoryEdit('${item.id}',${i},event)">Save</button>
+                  </div>
+                </div>
+              </div>`;
+            }
+            return `
             <div class="history-entry">
               <div class="history-entry-left">
                 <div class="history-mi">${(e.miles ?? 0).toLocaleString()} mi</div>
                 <div class="history-date">${e.date || ''}</div>
                 ${e.notes ? `<div class="history-notes">${e.notes}</div>` : ''}
               </div>
-              <button class="history-delete" onclick="deleteHistory('${item.id}',${i},event)">×</button>
-            </div>`).join('')}
+              <div class="history-entry-actions">
+                <button class="history-edit-btn" onclick="openHistoryEdit('${item.id}',${i},event)" aria-label="Edit history entry">✏</button>
+                <button class="history-delete" onclick="deleteHistory('${item.id}',${i},event)">×</button>
+              </div>
+            </div>`;
+          }).join('')}
         </div>
       </div>` : `<div class="history-section"><div class="history-label">History</div><div class="history-empty">No entries yet.</div></div>`}
     </div>`;

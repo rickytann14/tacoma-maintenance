@@ -991,6 +991,51 @@ body {
   color: var(--text);
 }
 
+/* ── History Entry Edit ───────────────────────────────────────────────────── */
+.history-entry-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.history-edit-btn {
+  background: none;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  transition: color 0.12s, background 0.12s;
+  line-height: 1;
+}
+.history-edit-btn:hover {
+  color: var(--accent);
+  background: rgba(99,102,241,0.1);
+}
+.history-entry.editing {
+  background: var(--surface-3);
+  border-radius: var(--radius);
+  padding: 10px;
+}
+.history-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.history-edit-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.history-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 2px;
+}
+
 /* ── Service Type Toggle ──────────────────────────────────────────────────── */
 .svc-type-btns {
   display: inline-flex;
