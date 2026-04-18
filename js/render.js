@@ -240,13 +240,21 @@ function renderItem(item) {
 }
 
 function renderLists() {
+  // remember which panels are currently open before re-render
+  const openIds = new Set(
+    Array.from(document.querySelectorAll('.item-expand.open')).map(el => el.id.replace('exp-', ''))
+  );
+
   ['fluids','filters','brakes'].forEach(g => {
     document.getElementById('list-' + g).innerHTML =
       ITEMS.filter(i => i.group === g).map(renderItem).join('');
   });
-  // auto-expand overdue items
+
+  // restore previously open panels; auto-expand overdue only if nothing was open yet
+  const anyOpen = openIds.size > 0;
   ITEMS.forEach(item => {
-    if (getStatus(item) === 'overdue') {
+    const shouldOpen = openIds.has(item.id) || (!anyOpen && getStatus(item) === 'overdue');
+    if (shouldOpen) {
       document.getElementById('exp-' + item.id)?.classList.add('open');
       document.getElementById('row-' + item.id)?.classList.add('open');
     }

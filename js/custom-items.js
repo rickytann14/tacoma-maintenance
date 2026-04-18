@@ -211,12 +211,19 @@ function renderCustomList() {
     list.innerHTML = '';
     return;
   }
+  const openIds = new Set(
+    Array.from(document.querySelectorAll('#list-custom .item-expand.open')).map(el => el.id.replace('exp-', ''))
+  );
   list.innerHTML = customItems.map(renderCustomItem).join('');
-  // auto-expand overdue custom items
+  const anyOpen = openIds.size > 0;
   customItems.forEach(item => {
-    if (!item.interval) return;
-    const rec = records[item.id] || {};
-    if (miles !== null) {
+    if (openIds.has(item.id)) {
+      document.getElementById('exp-' + item.id)?.classList.add('open');
+      document.getElementById('row-' + item.id)?.classList.add('open');
+      return;
+    }
+    if (!anyOpen && item.interval && miles !== null) {
+      const rec = records[item.id] || {};
       const lastDone = rec.lastMiles || 0;
       const rem = (lastDone + item.interval) - miles;
       if (rem <= 0) {
