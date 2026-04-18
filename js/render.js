@@ -182,6 +182,7 @@ function renderItem(item) {
                 return `
                 <div class="history-entry editing" onclick="event.stopPropagation()">
                   <div class="history-edit-form">
+                    <div class="history-edit-label">Editing entry</div>
                     <div class="history-edit-row">
                       <div>
                         <label class="exp-label">Miles</label>
