@@ -1,127 +1,96 @@
 # Tacoma Maintenance Tracker
 
-A single-file, browser-based maintenance tracker for 3rd Gen Toyota Tacoma trucks (2016-2023, V6 3.5L).
+A browser-based maintenance tracker for 3rd Gen Toyota Tacoma trucks (2016–2023, V6 3.5L). Log service history, see what's due next, and export backups — no install, no server, no account.
 
-This app helps you log service history, estimate what is due next, and keep backup/export files without any server or build step.
+## Quick Start
 
-## File Layout
+Open `index.html` in any modern browser. That's it.
 
-- `index.html` — HTML skeleton
-- `tacoma-tracker.css` — All styles
-- `js/` — JavaScript modules (data, logic, render, handlers, export, etc.)
-- `offline/tacoma-tracker.html` — Original single-file version (reference copy)
+For testing on your phone or tablet over Wi-Fi:
 
-## What It Tracks
+```bash
+./local-serve.sh start    # starts a server on port 8090
+./local-serve.sh status   # prints the LAN URL to open on your phone
+./local-serve.sh stop
+PORT=9000 ./local-serve.sh start   # use a custom port if 8090 is busy
+```
 
-Built-in maintenance groups include:
+## How to Use
 
-- Fluids
-- Filters & Spark Plugs
-- Brakes, Belt & Rotation
+### First time setup
 
-Each item can include:
+1. Enter your current odometer reading in the **Odometer** field and click **Update**.
+2. The dashboard instantly shows which items are overdue, due soon, or OK.
+3. Expand any item and fill in **Last done (miles)** if you know when it was last serviced.
 
-- Recommended interval (`normal` and optional `severe`)
-- Last service mileage/date
-- Service history entries
-- Part/spec notes
+### Logging a service
 
-## Core Features
+**Single item:** Click any row to expand it → click **Mark Done**. This records the current mileage and today's date. Add optional notes (shop, parts, cost) in the text field before clicking Mark Done.
 
-- Odometer input with live due/remaining calculations
-- Status categories: `overdue`, `soon`, `ok`, `unknown`
-- "Next service" mileage prediction
-- "Due at next service" list for upcoming grouped work
-- Toggle between `Normal` and `Severe` interval mode
-- Per-item expandable details with quick `Mark Done`
-- Service history log per item with delete support
-- Custom recurring items (interval-based)
-- Custom one-time items
-- Non-serviceable toggle for driveshaft item (excluded from tracking)
-- JSON backup export/import
-- PDF report export (summary + item status + history)
+**After a full service visit:** Click **Quick Service Log** in the sidebar. Overdue and due-soon items are pre-checked. Select everything that was done, add a shared note, and click **Log Selected**.
 
-## How Status Is Calculated
+### Interval mode
 
-For interval-based items:
+Toggle between **Normal** and **Severe** in the sidebar. Severe mode uses shorter intervals for items that support it (e.g., engine oil drops from 5K to 2K miles). Items without a severe interval are unaffected.
 
-- `lastDone` defaults to `0` if no record exists
-- `remaining = (lastDone + interval) - currentMiles`
-- `overdue`: `remaining <= 0`
-- `soon`: `remaining <= 1500` and not overdue
-- `ok`: `remaining > 1500`
-- `unknown`: current odometer not set
+### Custom items
 
-Notes:
+Click **Add custom item** at the bottom of the page to track anything not in the built-in list:
 
-- Items marked non-serviceable are excluded from status totals and scheduling.
-- One-time custom items are treated as `ok` once logged, otherwise `unknown`.
+- **Recurring** (e.g., "Diff breather service every 30K") — set a repeat interval in miles
+- **One-time** (e.g., "Timing chain replacement") — check the one-time box; item shows as OK once logged, unknown if not
+
+Custom items can be edited or removed from their expanded view.
+
+### Driveshaft greasing
+
+Not all 3rd Gens have a serviceable grease fitting on the driveshaft. Expand the **Grease Driveshaft** item and check the "Not applicable" box to exclude it from tracking and status counts.
+
+### Backups
+
+- **Save** — exports a `.json` file with all your data (use this regularly)
+- **Load** — restores from a `.json` backup, replacing current data
+- **Export PDF** — generates a printable report (requires internet for jsPDF CDN)
+
+Data lives in browser `localStorage` — it will be lost if you clear site data. Keep regular JSON backups.
+
+## What's Tracked
+
+Built-in items across three groups:
+
+| Group | Items |
+|---|---|
+| Fluids | Engine Oil, Transmission, Transfer Case, Rear/Front Diff, Coolant, Brake Fluid, Power Steering |
+| Filters & Spark Plugs | Cabin Filter, Engine Air Filter, Spark Plugs, Driveshaft Grease |
+| Brakes, Belt & Rotation | Tire Rotation, Front Brakes, Rear Drum Brakes, Serpentine Belt |
+
+Each item includes Toyota-specific part numbers, fluid specs, and torque values.
+
+## Status Calculations
+
+For interval-based items (using current odometer and last-done mileage):
+
+| Status | Condition |
+|---|---|
+| Overdue | `remaining ≤ 0` |
+| Due soon | `remaining ≤ 1500 mi` |
+| OK | `remaining > 1500 mi` |
+| Not logged | No odometer set |
+
+Items marked non-serviceable are excluded from status counts and scheduling.
+
+One-time custom items: `ok` once logged, `unknown` otherwise.
 
 ## Data Persistence
 
-All data is stored in browser `localStorage` (no backend).
+All data is stored in browser `localStorage`. Keys:
 
-Keys used:
+- `tm3_miles`, `tm3_severe`, `tm3_na`, `tm3_custom`, `tm3_records`
+- `tm3_truck_img_data`, `tm3_truck_img_label`
 
-- `tm3_miles`
-- `tm3_severe`
-- `tm3_na`
-- `tm3_custom`
-- `tm3_records`
-
-Because storage is browser-specific, use JSON export/import to move or back up data.
-
-## Running the App
-
-No install required.
-
-1. Open `index.html` in a modern browser.
-2. Enter current odometer miles.
-3. Expand items and log service events.
-4. Use `Export JSON` for backups and `Import JSON` to restore data.
-5. Use `Export PDF` for printable/shareable reports.
-
-### Local Network Testing (Phone/Tablet/Desktop)
-
-Use the helper script to run a separate local server (does not touch Apache config/services):
-
-1. Start server:
-
-```bash
-./local-serve.sh start
-```
-
-2. View status and URLs:
-
-```bash
-./local-serve.sh status
-```
-
-3. Open the printed `LAN URL` on your phone/tablet (same Wi-Fi/network).
-
-4. Stop server when done:
-
-```bash
-./local-serve.sh stop
-```
-
-Notes:
-
-- Default port is `8090`.
-- If port is busy, script exits safely so existing services are not disturbed.
-- Use a custom port if needed: `PORT=9000 ./local-serve.sh start`.
-
-## Dependencies
-
-External CDN scripts used by the page:
-
-- `jsPDF` (PDF export)
-
-If you run fully offline, PDF export and web fonts may not load unless these assets are available locally.
+Use JSON export/import to move data between browsers or devices.
 
 ## Backup File Format
-
-JSON export uses a top-level structure similar to:
 
 ```json
 {
@@ -135,10 +104,15 @@ JSON export uses a top-level structure similar to:
 }
 ```
 
-On import, the app validates `version === 1` and requires `records` to be an object.
+Import validates `version === 1` and requires `records` to be an object.
 
-## Notes and Limits
+## File Layout
 
-- This tool is for tracking and planning, not an official maintenance authority.
-- Always verify intervals/specs against Toyota service documentation for your exact trim and usage.
-- Data can be cleared if browser storage is wiped; keep JSON backups.
+- `index.html` — HTML skeleton and modals
+- `tacoma-tracker.css` — All styles
+- `js/` — JavaScript modules loaded in dependency order (data → storage → logic → render → handlers → features → init)
+- `offline/tacoma-tracker.html` — Original single-file reference copy (not the active version)
+
+## Dependencies
+
+- [jsPDF](https://github.com/parallax/jsPDF) via CDN — PDF export only. PDF export requires internet; all other features work offline.
