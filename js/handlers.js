@@ -7,15 +7,23 @@ function toggle(id) {
   if (!wasOpen) { exp.classList.add('open'); row.classList.add('open'); }
 }
 
-function pushHistory(id, milesVal, dateVal, notes) {
+function pushHistory(id, milesVal, dateVal, notes, type, brakeLining) {
   if (!records[id]) records[id] = {};
   if (!records[id].history) records[id].history = [];
   const entry = { miles: parseInt(milesVal), date: dateVal || new Date().toISOString().split('T')[0] };
   if (notes && notes.trim()) entry.notes = notes.trim();
+  if (type && type !== 'changed') entry.type = type;
+  if (brakeLining) entry.brakeLining = parseFloat(brakeLining);
   // avoid duplicate at same mileage
   if (!records[id].history.find(e => e.miles === entry.miles)) {
     records[id].history.unshift(entry); // newest first
   }
+}
+
+function selectSvcType(id, btn) {
+  const group = document.getElementById('svc-type-' + id);
+  group.querySelectorAll('.svc-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 }
 
 function markDone(id) {
@@ -24,10 +32,17 @@ function markDone(id) {
   const today = new Date().toISOString().split('T')[0];
   const notesEl = document.getElementById('notes-input-' + id);
   const notes = notesEl ? notesEl.value : '';
-  pushHistory(id, miles, today, notes);
+  const activeSvcBtn = document.querySelector('#svc-type-' + id + ' .svc-type-btn.active');
+  const svcType = activeSvcBtn ? activeSvcBtn.dataset.type : 'changed';
+  const brakeLiningEl = document.getElementById('brake-lining-' + id);
+  const brakeLining = brakeLiningEl ? brakeLiningEl.value : '';
+  pushHistory(id, miles, today, notes, svcType, brakeLining);
   if (notesEl) notesEl.value = '';
-  records[id].lastMiles = miles;
-  records[id].lastDate = today;
+  if (brakeLiningEl) brakeLiningEl.value = '';
+  if (svcType === 'changed') {
+    records[id].lastMiles = miles;
+    records[id].lastDate = today;
+  }
   save();
   renderAll();
   setTimeout(() => {
@@ -40,10 +55,11 @@ function deleteHistory(id, index, e) {
   e.stopPropagation();
   if (!records[id]?.history) return;
   records[id].history.splice(index, 1);
-  // if we deleted the most recent, update lastMiles to next entry
-  if (records[id].history.length > 0) {
-    records[id].lastMiles = records[id].history[0].miles;
-    records[id].lastDate  = records[id].history[0].date;
+  // recalculate lastMiles from most recent 'changed' entry (inspections don't reset interval)
+  const lastChange = records[id].history.find(e => !e.type || e.type === 'changed');
+  if (lastChange) {
+    records[id].lastMiles = lastChange.miles;
+    records[id].lastDate  = lastChange.date;
   } else {
     records[id].lastMiles = null;
     records[id].lastDate  = null;

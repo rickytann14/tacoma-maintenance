@@ -991,6 +991,52 @@ body {
   color: var(--text);
 }
 
+/* ── Service Type Toggle ──────────────────────────────────────────────────── */
+.svc-type-btns {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.svc-type-btn {
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--surface-3);
+  color: var(--text-2);
+  border: none;
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.svc-type-btn:last-child { border-right: none; }
+.svc-type-btn:hover { background: var(--surface-2); color: var(--text); }
+.svc-type-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ── History entry type badge ─────────────────────────────────────────────── */
+.history-mi-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.history-type-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 20px;
+}
+.history-type-badge.inspected {
+  background: rgba(96,165,250,0.15);
+  color: #60a5fa;
+}
+.history-type-badge.topped_off {
+  background: rgba(52,211,153,0.15);
+  color: #34d399;
+}
+
 /* final responsive overrides (kept at end for cascade precedence) */
 @media (max-width: 768px) {
   .app {

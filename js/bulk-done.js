@@ -12,6 +12,11 @@ function getItemStatus(item) {
   return getStatus(item);
 }
 
+function selectBulkSvcType(btn) {
+  document.querySelectorAll('#bulkSvcType .svc-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
 function openBulkModal() {
   if (miles === null) { alert('Set your current odometer first.'); return; }
 
@@ -36,6 +41,8 @@ function openBulkModal() {
 
   document.getElementById('bulkNotes').value = '';
   document.getElementById('bulkDate').value = new Date().toISOString().split('T')[0];
+  const bulkBtns = document.querySelectorAll('#bulkSvcType .svc-type-btn');
+  bulkBtns.forEach(b => b.classList.toggle('active', b.dataset.type === 'changed'));
   document.getElementById('bulkModal').classList.add('open');
 }
 
@@ -54,12 +61,16 @@ function saveBulkDone() {
 
   const notes = document.getElementById('bulkNotes').value.trim();
   const today = document.getElementById('bulkDate').value || new Date().toISOString().split('T')[0];
+  const activeBulkBtn = document.querySelector('#bulkSvcType .svc-type-btn.active');
+  const svcType = activeBulkBtn ? activeBulkBtn.dataset.type : 'changed';
 
   checked.forEach(id => {
     if (!records[id]) records[id] = {};
-    pushHistory(id, miles, today, notes);
-    records[id].lastMiles = miles;
-    records[id].lastDate = today;
+    pushHistory(id, miles, today, notes, svcType);
+    if (svcType === 'changed') {
+      records[id].lastMiles = miles;
+      records[id].lastDate = today;
+    }
   });
 
   save();

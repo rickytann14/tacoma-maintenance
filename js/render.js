@@ -152,26 +152,44 @@ function renderItem(item) {
             <div class="exp-note">${item.notes}<div class="exp-pn">${item.pn}</div></div>
           </div>
         </div>
-        <div style="margin-top:12px;display:flex;justify-content:flex-start">
+        <div style="margin-top:12px" onclick="event.stopPropagation()">
+          <label class="exp-label">Service Type</label>
+          <div class="svc-type-btns" id="svc-type-${item.id}">
+            <button class="svc-type-btn active" data-type="changed" onclick="selectSvcType('${item.id}',this);event.stopPropagation()">Changed</button>
+            <button class="svc-type-btn" data-type="inspected" onclick="selectSvcType('${item.id}',this);event.stopPropagation()">Inspected</button>
+            ${item.group === 'fluids' ? `<button class="svc-type-btn" data-type="topped_off" onclick="selectSvcType('${item.id}',this);event.stopPropagation()">Topped Off</button>` : ''}
+          </div>
+        </div>
+        ${item.group === 'brakes' ? `<div style="margin-top:8px" onclick="event.stopPropagation()">
+          <label class="exp-label">Brake Lining (mm)</label>
+          <input class="exp-input" type="number" step="0.5" min="0" max="15" id="brake-lining-${item.id}" placeholder="e.g. 4.5" onclick="event.stopPropagation()" style="width:120px">
+        </div>` : ''}
+        <div style="margin-top:10px;display:flex;justify-content:flex-start">
           <button class="btn-done" onclick="markDone('${item.id}');event.stopPropagation()">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3.5 8.3l3 3L12.5 5.2"/></svg>
-            Mark Done
+            Log Service
           </button>
         </div>
         <textarea class="notes-input" id="notes-input-${item.id}" placeholder="Optional notes (shop, parts, cost…)" onclick="event.stopPropagation()" rows="2"></textarea>
         <div class="history-section">
           <div class="history-label">Service History</div>
           <div class="history-list">
-            ${history.length ? history.map((h, i) => `
+            ${history.length ? history.map((h, i) => {
+              const typeLabel = h.type === 'inspected' ? 'Inspected' : h.type === 'topped_off' ? 'Topped Off' : null;
+              return `
               <div class="history-entry">
                 <div class="history-entry-left">
-                  <div class="history-mi">${(h.miles ?? 0).toLocaleString()} mi</div>
+                  <div class="history-mi-row">
+                    <span class="history-mi">${(h.miles ?? 0).toLocaleString()} mi</span>
+                    ${typeLabel ? `<span class="history-type-badge ${h.type}">${typeLabel}</span>` : ''}
+                  </div>
                   <div class="history-date">${h.date || ''}</div>
+                  ${h.brakeLining != null ? `<div class="history-notes">Lining: ${h.brakeLining} mm</div>` : ''}
                   ${h.notes ? `<div class="history-notes">${h.notes}</div>` : ''}
                 </div>
                 <button class="history-delete" onclick="deleteHistory('${item.id}',${i},event)" aria-label="Delete history entry">×</button>
-              </div>
-            `).join('') : '<div class="history-empty">No service entries yet.</div>'}
+              </div>`;
+            }).join('') : '<div class="history-empty">No service entries yet.</div>'}
           </div>
         </div>
       </div>
