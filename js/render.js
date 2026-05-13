@@ -160,7 +160,7 @@ function renderItem(item) {
             ${item.group === 'fluids' ? `<button class="svc-type-btn" data-type="topped_off" onclick="selectSvcType('${item.id}',this);event.stopPropagation()">Topped Off</button>` : ''}
           </div>
         </div>
-        ${item.group === 'brakes' ? `<div style="margin-top:8px" onclick="event.stopPropagation()">
+        ${['front_brakes','rear_drums'].includes(item.id) ? `<div style="margin-top:8px" onclick="event.stopPropagation()">
           <label class="exp-label">Brake Lining (mm)</label>
           <input class="exp-input" type="number" step="0.5" min="0" max="15" id="brake-lining-${item.id}" placeholder="e.g. 4.5" onclick="event.stopPropagation()" style="width:120px">
         </div>` : ''}
@@ -201,7 +201,7 @@ function renderItem(item) {
                         ${item.group === 'fluids' ? `<button class="svc-type-btn ${curType==='topped_off'?'active':''}" data-type="topped_off" onclick="selectHistoryEditType('${item.id}',${i},this);event.stopPropagation()">Topped Off</button>` : ''}
                       </div>
                     </div>
-                    ${item.group === 'brakes' ? `<div>
+                    ${['front_brakes','rear_drums'].includes(item.id) ? `<div>
                       <label class="exp-label">Brake Lining (mm)</label>
                       <input class="exp-input" type="number" step="0.5" min="0" max="15" id="history-edit-lining" value="${h.brakeLining ?? ''}" placeholder="e.g. 4.5" style="width:120px" onclick="event.stopPropagation()">
                     </div>` : ''}
