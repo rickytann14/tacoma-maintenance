@@ -36,7 +36,7 @@ function calcAvgMilesPerDay() {
   Object.values(records).forEach(rec => {
     if (rec.history) {
       rec.history.forEach(h => {
-        if (h.miles && h.date) allEntries.push(h);
+        if (h.miles != null && h.date) allEntries.push(h);
       });
     }
   });

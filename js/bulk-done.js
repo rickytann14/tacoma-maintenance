@@ -62,8 +62,7 @@ function saveBulkDone() {
 
   const notes = document.getElementById('bulkNotes').value.trim();
   const today = document.getElementById('bulkDate').value || new Date().toISOString().split('T')[0];
-  const activeBulkBtn = document.querySelector('#bulkSvcType .svc-type-btn.active');
-  const svcType = activeBulkBtn ? activeBulkBtn.dataset.type : 'changed';
+  const svcType = getActiveSvcType('#bulkSvcType');
 
   checked.forEach(id => {
     if (!records[id]) records[id] = {};

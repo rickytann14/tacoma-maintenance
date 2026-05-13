@@ -33,8 +33,7 @@ function saveHistoryEdit(id, index, e) {
   const milesVal = parseInt(document.getElementById('history-edit-miles').value);
   const dateVal  = document.getElementById('history-edit-date').value;
   const notesVal = document.getElementById('history-edit-notes').value.trim();
-  const activeTypeBtn = document.querySelector(`#history-edit-type-${id}-${index} .svc-type-btn.active`);
-  const svcType  = activeTypeBtn ? activeTypeBtn.dataset.type : 'changed';
+  const svcType  = getActiveSvcType(`#history-edit-type-${id}-${index}`);
   const liningEl = document.getElementById('history-edit-lining');
   const liningVal = liningEl ? liningEl.value : '';
 
@@ -107,8 +106,7 @@ function markDone(id) {
   const today = new Date().toISOString().split('T')[0];
   const notesEl = document.getElementById('notes-input-' + id);
   const notes = notesEl ? notesEl.value : '';
-  const activeSvcBtn = document.querySelector('#svc-type-' + id + ' .svc-type-btn.active');
-  const svcType = activeSvcBtn ? activeSvcBtn.dataset.type : 'changed';
+  const svcType = getActiveSvcType('#svc-type-' + id);
   const brakeLiningEl = document.getElementById('brake-lining-' + id);
   const brakeLining = brakeLiningEl ? brakeLiningEl.value : '';
   pushHistory(id, miles, today, notes, svcType, brakeLining);
@@ -158,6 +156,13 @@ function updateDateRec(id, value) {
   if (!records[id]) records[id] = {};
   records[id].lastDate = value;
   save();
+  renderAll();
+  reopenPanel(id);
+}
+
+function getActiveSvcType(containerId) {
+  const btn = document.querySelector(containerId + ' .svc-type-btn.active');
+  return btn ? btn.dataset.type : 'changed';
 }
 
 function toggleNA(id, el) {

@@ -53,10 +53,12 @@ function saveCustomItem() {
   }
 
   // update record miles/date if provided (for edits too)
-  if (editingCustomId && milesInt) {
+  if (editingCustomId && milesInt != null) {
+    pushHistory(editingCustomId, milesInt, date, '', 'changed');
+    const lastChange = lastResetEntry(editingCustomId);
     if (!records[editingCustomId]) records[editingCustomId] = {};
-    records[editingCustomId].lastMiles = milesInt;
-    records[editingCustomId].lastDate = date;
+    records[editingCustomId].lastMiles = lastChange?.miles ?? milesInt;
+    records[editingCustomId].lastDate  = lastChange?.date  ?? date;
   }
 
   save();
@@ -90,7 +92,7 @@ function renderCustomItem(item) {
     else if (rem <= 1500) status = 'soon';
     else status = 'ok';
   } else if (isOnetime) {
-    status = rec.lastMiles ? 'ok' : 'unknown';
+    status = rec.lastMiles != null ? 'ok' : 'unknown';
   }
 
   let remHtml = `<div class="row-rem"><div class="row-rem-lbl">—</div></div>`;
@@ -102,7 +104,7 @@ function renderCustomItem(item) {
       <div class="row-rem-lbl">${rem<=0?'mi overdue':'mi remaining'}</div>
       ${estDate ? `<div class="row-rem-est">${estDate}</div>` : ''}
     </div>`;
-  } else if (isOnetime && rec.lastMiles) {
+  } else if (isOnetime && rec.lastMiles != null) {
     remHtml = `<div class="row-rem"><div class="row-rem-lbl" style="text-align:right">@ ${rec.lastMiles.toLocaleString()} mi</div></div>`;
   }
 

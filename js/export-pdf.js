@@ -155,7 +155,7 @@ function exportPDF() {
             if (rem <= 1500) return 'soon';
             return 'ok';
           } else {
-            return rec.lastMiles ? 'ok' : 'unknown';
+            return rec.lastMiles != null ? 'ok' : 'unknown';
           }
         })()
       : getStatusForPDF(item);
